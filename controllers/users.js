@@ -10,7 +10,7 @@ const getUsers = (req, res) => readFiles(jsonDataPathToUsers)
   });
 
 const getUser = (req, res) => readFiles(jsonDataPathToUsers)
-  .then((data) => data.find((user) => user._id === req.params._id))
+  .then((data) => data.find((user) => user._id === req.params.id))
   .then((user) => {
     if (!user) {
       return res.status(404).send({ message: 'Нет пользователя с таким id' });
