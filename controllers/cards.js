@@ -46,14 +46,18 @@ const likeCard = async (req, res) => {
       req.params.cardId,
       { $addToSet: { likes: req.user._id } },
       { new: true },
-    );
+    )
+      .orFail(new Error('NotValidId')); // Добавлен способ orFail, спасибо за проделанную работу!
     res.status(200).send(cardLike);
   } catch (err) {
     if (err.name === 'CastError') {
       res.status(400).send({ message: 'Неверные данные' });
       return;
+    } if (err.message === 'NotValidId') {
+      res.status(404).send({ message: 'Карточка не найдена' });
+    } else {
+      res.status(500).send({ message: `Ошибка на сервере: ${err}` });
     }
-    res.status(500).send({ message: `Ошибка на сервере: ${err}` });
   }
 };
 
@@ -63,14 +67,18 @@ const dislikeCard = async (req, res) => {
       req.params.cardId,
       { $pull: { likes: req.user._id } },
       { new: true },
-    );
+    )
+      .orFail(new Error('NotValidId'));
     res.status(200).send(cardDislike);
   } catch (err) {
     if (err.name === 'CastError') {
       res.status(400).send({ message: 'Неверные данные' });
       return;
+    } if (err.message === 'NotValidId') {
+      res.status(404).send({ message: 'Карточка не найдена' });
+    } else {
+      res.status(500).send({ message: `Ошибка на сервере: ${err}` });
     }
-    res.status(500).send({ message: `Ошибка на сервере: ${err}` });
   }
 };
 

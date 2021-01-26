@@ -20,7 +20,7 @@ app.use(bodyParser.json());
 
 app.use((req, res, next) => {
   req.user = {
-    _id: '600ff43b3a6dbdbd3efb4bdb',
+    _id: '600ff43b3a6dbdbd3efb4bdb', // 600ff43b3a6dbdbd3efb4bdb изначальный id
   };
   next();
 });
@@ -32,5 +32,6 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, () => {
+  // eslint-disable-next-line no-console
   console.log(`server is running ${PORT}`);
 });
