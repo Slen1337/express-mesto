@@ -13,10 +13,6 @@ const getUserById = async (req, res) => {
   try {
     const user = await User.findById({ _id: req.params.id })
       .orFail(new Error('NotValidId'));
-    if (!user) {
-      res.status(404).send({ message: 'Нет пользователя с таким id' });
-      return;
-    }
     res.status(200).send(user);
   } catch (err) {
     if (err.name === 'CastError') {
@@ -33,18 +29,14 @@ const getUserById = async (req, res) => {
 const createUser = async (req, res) => {
   const { name, about, avatar } = req.body;
   try {
-    const newUser = await User.create({ name, about, avatar })
-      .orFail(new Error('NotValidId')); // Добавлен способ orFail, спасибо за проделанную работу!
+    const newUser = await User.create({ name, about, avatar });
     res.status(200).send(newUser);
   } catch (err) {
     if (err.name === 'ValidationError') {
       res.status(400).send({ message: 'Неверные данные' });
       return;
-    } if (err.message === 'NotValidId') {
-      res.status(404).send({ message: 'Пользователь не найден' });
-    } else {
-      res.status(500).send({ message: `Ошибка на сервере: ${err}` });
     }
+    res.status(500).send({ message: `Ошибка на сервере: ${err}` });
   }
 };
 

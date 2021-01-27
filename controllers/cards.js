@@ -25,18 +25,18 @@ const createCard = async (req, res) => {
 
 const deleteCard = async (req, res) => {
   try {
-    const cardDelete = await Card.findByIdAndRemove({ _id: req.params.cardId });
-    if (!cardDelete) {
-      res.status(404).send({ message: 'Карточки не существует' });
-      return;
-    }
+    const cardDelete = await Card.findByIdAndRemove({ _id: req.params.cardId })
+      .orFail(new Error('NotValidId'));
     res.status(200).send({ message: `Карточку удалили ${cardDelete}` });
   } catch (err) {
     if (err.name === 'CastError') {
       res.status(400).send({ message: 'Неверные данные' });
       return;
+    } if (err.message === 'NotValidId') {
+      res.status(404).send({ message: 'Карточка не найдена' });
+    } else {
+      res.status(500).send({ message: `Ошибка на сервере: ${err}` });
     }
-    res.status(500).send({ message: `Ошибка на сервере: ${err}` });
   }
 };
 
